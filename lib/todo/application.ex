@@ -1,3 +1,5 @@
+# Todo Application [kernel, supervisor]
+# This module initializes and supervises all Todo services on behalf of its clients
 defmodule Todo.Application do
   use Application
 
@@ -13,8 +15,12 @@ defmodule Todo.Application do
     ]
     children = [
       {Cluster.Supervisor, [topologies, [name: Todo.ClusterSupervisor]]},
-      Todo.System
+      Todo.Metrics,
+      Todo.Database,
+      Todo.Cache,
+      Todo.WebCache,
+      Todo.Web
     ]
-    Supervisor.start_link(children, strategy: :one_for_one)
+    Supervisor.start_link(children, strategy: :one_for_one, name: Todo.System)
   end
 end
